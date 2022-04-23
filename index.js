@@ -11,6 +11,9 @@ let ready;
 client.initialize();
 client.on('qr', (qr) => {
     curr_qr = qr;
+    qrcode.generate(qr, {small: true}, function (qrcode) {
+        console.log(qrcode)
+    });
 });
 client.on('ready', (data) => {
     console.log('Client is ready!');
@@ -39,25 +42,26 @@ app.get('/',function(req,res){
     res.sendFile(path.join(__dirname+(ready ? '/index.html' : '/auth.html')));
 });
 app.get('/qrcode.js',function(req,res){
-    res.sendFile(path.join(__dirname+'/node_modules/qrcodejs/qrcode.js'));
+    res.sendFile(path.join(__dirname+'/node_modules/@keeex/qrcodejs-kx/qrcode.min.js'));
 });
 app.get('/getStatus',function(req,res){
     res.send(curr_qr);
 });
 app.get('/getMe',function(req,res){
-    client.getProfilePicUrl(client.info.wid.user).then((value)=>{
-        res.send({info : client.info, pict : value});
-    });
+    // client.getProfilePicUrl(client.info.wid.user).then((value)=>{
+    //     res.send({info : client.info, pict : value});
+    // });
 });
 app.post('/sendMessage',function(req,res){
     const body = req.body;
     res.statusCode = 400;
     try {
-        if (body.pnumber.length < 5 || body.pnumber[0] != '6' || !isNumeric(body.pnumber))
-            return res.end(throwError(`Isi nomor telepon yang valid! Terisi (+${body.pnumber})`));
+        const pnumber = body.pnumber ? body.pnumber : '6281234560515';
+        if (!pnumber && pnumber.length < 5 || pnumber[0] != '6' || !isNumeric(pnumber))
+            return res.end(throwError(`Isi nomor telepon yang valid! Terisi (+${pnumber})`));
         if (body.message.length < 5)
             return res.end(throwError(`Pesan tidak boleh kosong!`));
-        client.sendMessage(`${body.pnumber}@c.us`, body.message).then(
+        client.sendMessage(`${pnumber}@c.us`, body.message).then(
             (value)=>{
                 res.statusCode = 200;
                 res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Send Message to +${req.body.pnumber}<br><div class="py-1 px-2 bg-chat">${req.body.message}</div></div>`);
