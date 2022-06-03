@@ -102,7 +102,7 @@ app.post('/sendMessage',function(req,res){
                                     if (err){
                                         console.log("Error (98) " + err);
                                     }
-                                    console.log("Result : " + JSON.stringify(result))
+                                    // console.log("Result : " + JSON.stringify(result))
                                     if (result.length > 0)
                                         user_id = `'${result[0].id}'`;
                                         
