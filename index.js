@@ -15,6 +15,20 @@ client.on('qr', (qr) => {
         console.log(qrcode)
     });
 });
+
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: ""
+});
+
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("MySQL Connected!");
+});
+
 client.on('ready', (data) => {
     console.log('Client is ready!');
     ready = true;
@@ -55,22 +69,53 @@ app.get('/getMe',function(req,res){
 app.post('/sendMessage',function(req,res){
     const body = req.body;
     res.statusCode = 400;
+    let err_msg = null;
     try {
         const pnumber = body.pnumber ? body.pnumber : '6281234560515';
         if (!pnumber && pnumber.length < 5 || pnumber[0] != '6' || !isNumeric(pnumber))
-            return res.end(throwError(`Isi nomor telepon yang valid! Terisi (+${pnumber})`));
+            res.end(throwError(err_msg = `Isi nomor telepon yang valid! Terisi (+${pnumber})`));
         if (body.message.length < 5)
-            return res.end(throwError(`Pesan tidak boleh kosong!`));
-        client.sendMessage(`${pnumber}@c.us`, body.message).then(
-            (value)=>{
-                res.statusCode = 200;
-                res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Send Message to +${req.body.pnumber}<br><div class="py-1 px-2 bg-chat">${req.body.message}</div></div>`);
-            }
+            res.end(throwError(err_msg = `Pesan tidak boleh kosong!`));
+        if (err_msg == null)
+            client.sendMessage(`${pnumber}@c.us`, body.message).then(
+                (value)=>{
+                    res.statusCode = 200;
+                    res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Send Message to +${req.body.pnumber}<br><div class="py-1 px-2 bg-chat">${req.body.message}</div></div>`);
+                    con.query("SELECT * FROM db_wa_api.user WHERE pnumber = '"+pnumber+"'", function(err, result){
+                        if (err){
+                            console.log("Error " + err);
+                        }
+                        console.log("Result : " + result)
+                        var user_id = "null";
+                        if (result.length > 0)
+                            user_id = `'${result[0].id}'`;
+                        else
+                            con.query("INSERT INTO db_wa_api.user (pnumber, created_at) VALUES ('"+body.pnumber.toString().replace("'", "''")+"', NOW());", function (err, result) {
+                                if (err)
+                                    console.log("Error " + err);
+                                console.log("Result: " + result);
+                            });
+                        con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", '"+body.message.toString().replace("'", "''")+"', NOW());", function (err, result) {
+                            if (err)
+                                console.log("Error " + err);
+                            console.log("Result: " + result);
+                        });
+                    })
+                }
         ).catch(
             (reason)=>{
-                res.end(throwError(reason));
+                res.end(throwError(err_msg = reason));
             }
         );
+    }catch(err) {
+        res.end(throwError(err_msg = err));
+    }
+    try {
+        con.query("INSERT INTO db_wa_api.request (param, message, error, created_at) VALUES ('"+JSON.stringify(body).replace("'", "''")+"', '"+(err_msg ? err_msg.toString().replace("'", "''") : "")+"' ,"+(err_msg ? '1' : '0')+", NOW());", function (err, result) {
+            if (err)
+                console.log("Error Insert Message" + err);
+            console.log("Result: " + result);
+        });
     }catch(err) {
         res.end(throwError(err));
     }
