@@ -86,38 +86,48 @@ app.post('/sendMessage',function(req,res){
                             console.log("Error (86) " + err);
                         }
                         // console.log("Result : " + result)
-                        var user_id = "null";
-                        if (result.length > 0)
+                        let user_id = "null";
+                        if (result.length > 0){
                             user_id = `'${result[0].id}'`;
-                        else
+                            con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(body.message)+", NOW());", function (err, result) {
+                                if (err)
+                                    console.log("Error (108) " + err);
+                                // console.log("Result: " + result);
+                            });
+                        } else
                             con.query("INSERT INTO db_wa_api.user (pnumber, created_at) VALUES ("+con.escape(body.pnumber)+", NOW());", function (err, result) {
                                 if (err)
                                     console.log("Error (95) " + err);
-                                // console.log("Result: " + result);
+                                con.query("SELECT * FROM db_wa_api.user WHERE pnumber = "+con.escape(body.pnumber), function(err, result){
+                                    if (err){
+                                        console.log("Error (98) " + err);
+                                    }
+                                    console.log("Result : " + JSON.stringify(result))
+                                    if (result.length > 0)
+                                        user_id = `'${result[0].id}'`;
+                                        
+                                    con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(body.message)+", NOW());", function (err, result) {
+                                        if (err)
+                                            console.log("Error (108) " + err);
+                                        // console.log("Result: " + result);
+                                    });
+                                    // console.log("Result: " + result);
+                                });
                             });
-                        con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(body.message)+", NOW());", function (err, result) {
-                            if (err)
-                                console.log("Error (100) " + err);
-                            // console.log("Result: " + result);
-                        });
                     })
+                    return updateRequest(body, err_msg);
                 }
-        ).catch(
-            (reason)=>{
-                res.end(throwError(err_msg = reason));
-            }
-        );
+            ).catch(
+                (reason)=>{
+                    res.end(throwError(err_msg = reason));
+                    return updateRequest(body, err_msg);
+                }
+            );
+        else {
+            return updateRequest(body, err_msg);
+        }
     }catch(err) {
         res.end(throwError(err_msg = err));
-    }
-    try {
-        const query = "INSERT INTO db_wa_api.request (param, message, error, created_at) VALUES ("+con.escape(JSON.stringify(body))+", "+con.escape(err_msg ? err_msg : "")+" ,"+(err_msg ? '1' : '0')+", NOW());";
-        con.query(query , function (err, result) {
-            if (err)
-                console.log("Error (116) " + err);
-        });
-    }catch(err) {
-        res.end(throwError(err));
     }
 });
 app.post('/logout',function(req,res){
@@ -151,4 +161,17 @@ function isNumeric(str) {
     if (typeof str != "string") return false
     return !isNaN(str) && 
            !isNaN(parseFloat(str))
-  }
+}
+
+function updateRequest(body, err_msg){
+    try {
+        const query = "INSERT INTO db_wa_api.request (param, message, error, created_at) VALUES ("+con.escape(JSON.stringify(body))+", "+con.escape(err_msg ? err_msg : "")+" ,"+(err_msg ? '1' : '0')+", NOW());";
+        con.query(query , function (err, result) {
+            if (err)
+                console.log("Error (116) " + err);
+        });
+        return;
+    }catch(err) {
+        return res.end(throwError(err));
+    }
+}
