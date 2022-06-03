@@ -81,24 +81,24 @@ app.post('/sendMessage',function(req,res){
                 (value)=>{
                     res.statusCode = 200;
                     res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Send Message to +${req.body.pnumber}<br><div class="py-1 px-2 bg-chat">${req.body.message}</div></div>`);
-                    con.query("SELECT * FROM db_wa_api.user WHERE pnumber = '"+pnumber+"'", function(err, result){
+                    con.query("SELECT * FROM db_wa_api.user WHERE pnumber = "+con.escape(pnumber), function(err, result){
                         if (err){
-                            console.log("Error " + err);
+                            console.log("Error (86) " + err);
                         }
-                        console.log("Result : " + result)
+                        // console.log("Result : " + result)
                         var user_id = "null";
                         if (result.length > 0)
                             user_id = `'${result[0].id}'`;
                         else
-                            con.query("INSERT INTO db_wa_api.user (pnumber, created_at) VALUES ('"+body.pnumber.toString().replace("'", "''")+"', NOW());", function (err, result) {
+                            con.query("INSERT INTO db_wa_api.user (pnumber, created_at) VALUES ("+con.escape(body.pnumber)+", NOW());", function (err, result) {
                                 if (err)
-                                    console.log("Error " + err);
-                                console.log("Result: " + result);
+                                    console.log("Error (95) " + err);
+                                // console.log("Result: " + result);
                             });
-                        con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", '"+body.message.toString().replace("'", "''")+"', NOW());", function (err, result) {
+                        con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(body.message)+", NOW());", function (err, result) {
                             if (err)
-                                console.log("Error " + err);
-                            console.log("Result: " + result);
+                                console.log("Error (100) " + err);
+                            // console.log("Result: " + result);
                         });
                     })
                 }
@@ -111,10 +111,10 @@ app.post('/sendMessage',function(req,res){
         res.end(throwError(err_msg = err));
     }
     try {
-        con.query("INSERT INTO db_wa_api.request (param, message, error, created_at) VALUES ('"+JSON.stringify(body).replace("'", "''")+"', '"+(err_msg ? err_msg.toString().replace("'", "''") : "")+"' ,"+(err_msg ? '1' : '0')+", NOW());", function (err, result) {
+        const query = "INSERT INTO db_wa_api.request (param, message, error, created_at) VALUES ("+con.escape(JSON.stringify(body))+", "+con.escape(err_msg ? err_msg : "")+" ,"+(err_msg ? '1' : '0')+", NOW());";
+        con.query(query , function (err, result) {
             if (err)
-                console.log("Error Insert Message" + err);
-            console.log("Result: " + result);
+                console.log("Error (116) " + err);
         });
     }catch(err) {
         res.end(throwError(err));
