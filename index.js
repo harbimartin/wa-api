@@ -59,7 +59,7 @@ client.on('message', message => {
 
 
 local_app.use(express.json())
-local_app.set("port", 3000);
+local_app.set("port", 3001);
 local_app.listen(local_app.get("port"), '127.0.0.1', () =>{
   console.info("Application listening on port http://127.0.0.1:"+ local_app.get("port"));
 });
