@@ -14,7 +14,8 @@ const client = new Client({
     }
 });
 // var ip = require("ip");
-var app = express();
+var local_app = express();
+var public_app = express();
 
 let curr_qr;
 let ready;
@@ -57,26 +58,32 @@ client.on('message', message => {
 });
 
 
-app.set("port", 3000);
-app.use(express.json())
-app.listen(app.get("port"), '127.9.0.1', () =>{
-  console.info("Application listening on port http://127.0.0.1:"+ app.get("port"));
+local_app.use(express.json())
+local_app.set("port", 3000);
+local_app.listen(local_app.get("port"), '127.0.0.1', () =>{
+  console.info("Application listening on port http://127.0.0.1:"+ local_app.get("port"));
 });
-app.get('/',function(req,res){
+
+public_app.use(express.json())
+public_app.set("port", 3000);
+public_app.listen(local_app.get("port"), () =>{
+  console.info("Application listening on port http://127.0.0.1:"+ local_app.get("port"));
+});
+public_app.get('/',function(req,res){
     res.sendFile(path.join(__dirname+(ready ? '/index.html' : '/auth.html')));
 });
-app.get('/qrcode.js',function(req,res){
+public_app.get('/qrcode.js',function(req,res){
     res.sendFile(path.join(__dirname+'/node_modules/@keeex/qrcodejs-kx/qrcode.min.js'));
 });
-app.get('/getStatus',function(req,res){
+public_app.get('/getStatus',function(req,res){
     res.send(curr_qr);
 });
-app.get('/getMe',function(req,res){
+public_app.get('/getMe',function(req,res){
     // client.getProfilePicUrl(client.info.wid.user).then((value)=>{
     //     res.send({info : client.info, pict : value});
     // });
 });
-app.post('/sendMessage',function(req,res){
+local_app.post('/sendMessage',function(req,res){
     const body = req.body;
     res.statusCode = 400;
     let err_msg = null;
@@ -136,7 +143,7 @@ app.post('/sendMessage',function(req,res){
         res.end(throwError(err_msg = err));
     }
 });
-app.post('/logout',function(req,res){
+public_app.post('/logout',function(req,res){
     const body = req.body;
     res.statusCode = 400;
     try {
