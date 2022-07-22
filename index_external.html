@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="favicon.ico">
+    <script type="text/javascript" src="qrcode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <title>Whatsapp PT. KBS</title>
+    <style>
+        .bg-chat {
+            background: rgb(231, 255, 193);
+        }
+    </style>
+</head>
+
+<body class="bg-black h-full">
+    <div class="px-4 text-xl md:text-3xl font-semibold text-white flex" style="background:#00a385; height:30vh;">
+        <div class="flex" style="height:18vh;">
+            <div class="my-auto md:ml-16">Whatsapp Integration System (WIS) PT. Krakatau International Port</div>
+        </div>
+    </div>
+    <div class="p-4 lg:py-12 lg:px-16 md:mt-5 text-sm md:text-base bg-white md:rounded shadow-2xl mx-auto"
+        style="margin-top:-12vh; max-width:1112px;">
+        <div class="text-center flex flex-col">
+            <div id="logout"
+                class="mb-4 font-normal text-sm rounded-md bg-red-600 hover:bg-red-700 ml-auto text-white px-2 py-0.5 cursor-pointer">
+                Logout
+            </div>
+            <div class="mx-auto">
+                <p class="md:font-light md:text-2xl mb-3">API untuk mengirim pesan Whatsapp secara server-side!</p>
+                <p>Saat ini Whatsapp anda telah berhasil terkoneksi!</p>
+            </div>
+            <div class="mx-auto inline-flex mt-4">
+                <div class="my-auto font-bold text-xl mb-1">+</div>
+                <input id="pnumber" type="text" placeholder="62800000"
+                    class="text-base rounded p-1 w-full border border-green-700">
+            </div>
+            <input id="send" type="button"
+                class="mx-auto bg-green-600 text-white font-bold hover:bg-green-700 rounded-md py-2 px-6 float-right mt-3 cursor-pointer"
+                value="Lakukan Test">
+            <div id="log" class="border border-gray-400 rounded-xl p-2 h-full text-sm w-full overflow-auto mt-5"
+                style="min-height:200px; max-height:390px;"></div>
+
+        </div>
+    </div>
+    <script type="text/javascript">
+        var url_string = window.location.href
+        var url = new URL(url_string);
+        var c = url.searchParams.get("msg");
+        let message = "";
+        let log = "";
+        document.getElementById("send").addEventListener("click", () => {
+            console.log('lah');
+            const data = {
+                pnumber: document.getElementById('pnumber').value
+            };
+            fetch(window.location.origin + '/api/v1/checkWhatsapp', {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'application/json'
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            })
+                .then(response => response.text())
+                .then(data => {
+                    log += data;
+                    document.getElementById('log').innerHTML = log;
+                });
+        });
+        document.getElementById("logout").addEventListener("click", () => {
+            fetch(window.location.origin + '/logout', {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'application/json'
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: null // body data type must match "Content-Type" header
+            })
+                .then(response => {
+                    if (response.status == 200) {
+                        setTimeout(() => {
+                            window.location.href = window.location.origin;
+                        })
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    log += data;
+                    document.getElementById('message').value = '';
+                    document.getElementById('log').innerHTML = log;
+                });
+        });
+        fetch(window.location.origin + '/getMe')
+            .then(response => response.json())
+            .then(data => {
+                log = `<div class="bg-yellow-100 p-2"><span class="text-yellow-800">Logged as <img class="inline rounded-full mb-1 mr-1 shadow" src="${data.pict}" width="24" height"24"/></span>${data.info.pushname} (+${data.info.me.user})</div>`;
+                document.getElementById('message').value = '';
+                document.getElementById('log').innerHTML = log;
+            });
+    </script>
+</body>
+
+</html>

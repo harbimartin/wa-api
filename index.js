@@ -70,7 +70,7 @@ public_app.listen(public_app.get("port"), () =>{
   console.info("Application listening on port http://" + ip.address() +':'+ public_app.get("port"));
 });
 public_app.get('/',function(req,res){
-    res.sendFile(path.join(__dirname+(ready ? '/index.html' : '/auth.html')));
+    res.sendFile(path.join(__dirname+(ready ? '/index_external.html' : '/auth_external.html')));
 });
 public_app.get('/qrcode.js',function(req,res){
     res.sendFile(path.join(__dirname+'/node_modules/@keeex/qrcodejs-kx/qrcode.min.js'));
@@ -83,6 +83,67 @@ public_app.get('/getMe',function(req,res){
     //     res.send({info : client.info, pict : value});
     // });
 });
+// public_app.post('/sendMessage',function(req,res){
+//     const body = req.body;
+//     res.statusCode = 400;
+//     let err_msg = null;
+//     try {
+//         const pnumber = body.pnumber;
+//         const message = `Whatsapp Integration System Test
+// ${getTime()} ${getDate()}
+// Status : OK`;
+//         if (!pnumber && pnumber.length < 5 || pnumber[0] != '6' || !isNumeric(pnumber))
+//             res.end(throwError(err_msg = `Isi nomor telepon yang valid! Terisi (+${pnumber})`));
+//         if (err_msg == null)
+//             client.sendMessage(`${pnumber}@c.us`, message).then(
+//                 (value)=>{
+//                     res.statusCode = 200;
+//                     res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Send Message to +${req.body.pnumber}<br><div class="py-1 px-2 bg-chat">${message}</div></div>`);
+//                     // con.query("SELECT * FROM db_wa_api.user WHERE pnumber = "+con.escape(pnumber), function(err, result){
+//                         // if (err){
+//                         //     console.log("Error (86) " + err);
+//                         // }
+//                         // console.log("Result : " + result)
+//                         // let user_id = "null";
+//                         // if (result.length > 0){
+//                         //     user_id = `'${result[0].id}'`;
+//                             // con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(message)+", NOW());", function (err, result) {
+//                             //     if (err)
+//                             //         console.log("Error (108) " + err);
+//                             // });
+//                         // } else
+//                             // con.query("INSERT INTO db_wa_api.user (pnumber, created_at) VALUES ("+con.escape(body.pnumber)+", NOW());", function (err, result) {
+//                             //     if (err)
+//                             //         console.log("Error (95) " + err);
+//                             //     con.query("SELECT * FROM db_wa_api.user WHERE pnumber = "+con.escape(body.pnumber), function(err, result){
+//                             //         if (err){
+//                             //             console.log("Error (98) " + err);
+//                             //         }
+//                             //         if (result.length > 0)
+//                             //             user_id = `'${result[0].id}'`;
+                                        
+//                             //         con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(message)+", NOW());", function (err, result) {
+//                             //             if (err)
+//                             //                 console.log("Error (108) " + err);
+//                             //         });
+//                             //     });
+//                             // });
+//                     // })
+//                     // return updateRequest(body, err_msg);
+//                 }
+//             ).catch(
+//                 (reason)=>{
+//                     res.end(throwError(err_msg = reason));
+//                     return updateRequest(body, err_msg);
+//                 }
+//             );
+//         else {
+//             return updateRequest(body, err_msg);
+//         }
+//     }catch(err) {
+//         res.end(throwError(err_msg = err));
+//     }
+// });
 local_app.post('/sendMessage',function(req,res){
     const body = req.body;
     res.statusCode = 400;
@@ -91,13 +152,13 @@ local_app.post('/sendMessage',function(req,res){
         const pnumber = body.pnumber ? body.pnumber : '6281234560515';
         if (!pnumber && pnumber.length < 5 || pnumber[0] != '6' || !isNumeric(pnumber))
             res.end(throwError(err_msg = `Isi nomor telepon yang valid! Terisi (+${pnumber})`));
-        if (body.message.length < 5)
+        if (message.length < 5)
             res.end(throwError(err_msg = `Pesan tidak boleh kosong!`));
         if (err_msg == null)
-            client.sendMessage(`${pnumber}@c.us`, body.message).then(
+            client.sendMessage(`${pnumber}@c.us`, message).then(
                 (value)=>{
                     res.statusCode = 200;
-                    res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Send Message to +${req.body.pnumber}<br><div class="py-1 px-2 bg-chat">${req.body.message}</div></div>`);
+                    res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Send Message to +${req.body.pnumber}<br><div class="py-1 px-2 bg-chat">${message}</div></div>`);
                     // con.query("SELECT * FROM db_wa_api.user WHERE pnumber = "+con.escape(pnumber), function(err, result){
                         // if (err){
                         //     console.log("Error (86) " + err);
@@ -106,7 +167,7 @@ local_app.post('/sendMessage',function(req,res){
                         // let user_id = "null";
                         // if (result.length > 0){
                         //     user_id = `'${result[0].id}'`;
-                            // con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(body.message)+", NOW());", function (err, result) {
+                            // con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(message)+", NOW());", function (err, result) {
                             //     if (err)
                             //         console.log("Error (108) " + err);
                             // });
@@ -121,7 +182,7 @@ local_app.post('/sendMessage',function(req,res){
                             //         if (result.length > 0)
                             //             user_id = `'${result[0].id}'`;
                                         
-                            //         con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(body.message)+", NOW());", function (err, result) {
+                            //         con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(message)+", NOW());", function (err, result) {
                             //             if (err)
                             //                 console.log("Error (108) " + err);
                             //         });
@@ -152,7 +213,7 @@ public_app.post('/logout',function(req,res){
         client.logout().then(
             (value)=>{
                 res.statusCode = 200;
-                res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Logout!">${req.body.message}</div></div>`);
+                res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Logout!">${message}</div></div>`);
             }
         ).catch(
             (reason)=>{
@@ -163,6 +224,10 @@ public_app.post('/logout',function(req,res){
         res.end(throwError(err));
     }
 });
+// function getDate(){
+//     const now = new Date();
+//     return now.getDate() + "/" + now.getMonth() + "/" + now.getFullYear();
+// }
 function getTime(){
     const now = new Date();
     return now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
