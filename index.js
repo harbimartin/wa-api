@@ -66,7 +66,7 @@ local_app.listen(local_app.get("port"), '127.0.0.1', () =>{
 
 public_app.use(express.json())
 public_app.set("port", 3000);
-public_app.listen(local_app.get("port"), () =>{
+public_app.listen(public_app.get("port"), () =>{
   console.info("Application listening on port http://" + ip.address() +':'+ public_app.get("port"));
 });
 public_app.get('/',function(req,res){
