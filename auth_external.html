@@ -41,11 +41,16 @@
         var url = new URL(url_string);
         var c = url.searchParams.get("msg");
 
-        fetch(window.location.origin + '/getStatus')
-            .then(response => response.text())
-            .then(data => {
-                new QRCode(document.getElementById("qrcode"), data);
-            });
+        setInterval(() => {
+            fetch(window.location.origin + '/getStatus')
+                .then(response => response.text())
+                .then(data => {
+                    if (data == 'WA_IS_READY')
+                        location.reload();
+                    else
+                        new QRCode(document.getElementById("qrcode"), data);
+                });
+        }, 1000);
     </script>
 </body>
 

@@ -75,8 +75,11 @@ public_app.get('/',function(req,res){
 public_app.get('/qrcode.js',function(req,res){
     res.sendFile(path.join(__dirname+'/node_modules/@keeex/qrcodejs-kx/qrcode.min.js'));
 });
-public_app.get('/getStatus',function(req,res){
-    res.send(curr_qr);
+public_app.get('/getStatus', function (req, res) {
+    if (ready) {
+        res.send('WA_IS_READY');
+    }else
+        res.send(curr_qr);
 });
 public_app.get('/getMe',function(req,res){
     // client.getProfilePicUrl(client.info.wid.user).then((value)=>{
