@@ -152,12 +152,14 @@ local_app.post('/sendMessage',function(req,res){
     res.statusCode = 400;
     let err_msg = null;
     try {
+        res.statusCode = 406;
         const pnumber = body.pnumber ? body.pnumber : '6281234560515';
         const message = body.message;
         if (!pnumber && pnumber.length < 5 || pnumber[0] != '6' || !isNumeric(pnumber))
             res.end(throwError(err_msg = `Isi nomor telepon yang valid! Terisi (+${pnumber})`));
         if (message.length < 5)
             res.end(throwError(err_msg = `Pesan tidak boleh kosong!`));
+        res.statusCode = 400;
         if (err_msg == null)
             client.sendMessage(`${pnumber}@c.us`, message).then(
                 (value)=>{
