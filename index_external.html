@@ -47,17 +47,19 @@
         </div>
     </div>
     <script type="text/javascript">
-        var url_string = window.location.href
+        var url_string = window.location.href;
         var url = new URL(url_string);
         var c = url.searchParams.get("msg");
         let message = "";
         let log = "";
+        const host = 'http://waman.com/api/v1/checkWhatsapp';
+        //const host = 'http://' + location.hostname + '/api/v1/checkWhatsapp';
         document.getElementById("send").addEventListener("click", () => {
             console.log('lah');
             const data = {
                 pnumber: document.getElementById('pnumber').value
             };
-            fetch(location.host + '/api/v1/checkWhatsapp', {
+            fetch(host, {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 mode: 'cors', // no-cors, *cors, same-origin
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -73,6 +75,7 @@
                 .then(response => response.text())
                 .then(data => {
                     log += data;
+                    document.getElementById('pnumber').value = '';
                     document.getElementById('log').innerHTML = log;
                 });
         });
@@ -100,7 +103,7 @@
                 })
                 .then(data => {
                     log += data;
-                    document.getElementById('message').value = '';
+                    document.getElementById('pnumber').value = '';
                     document.getElementById('log').innerHTML = log;
                 });
         });
