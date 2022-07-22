@@ -13,7 +13,7 @@ const client = new Client({
         ]
     }
 });
-var ip = require("ip");
+// var ip = require("ip");
 var app = express();
 
 let curr_qr;
@@ -59,8 +59,8 @@ client.on('message', message => {
 
 app.set("port", 3000);
 app.use(express.json())
-app.listen(app.get("port"), () =>{
-  console.info("Application listening on port http://" + ip.address() +':'+ app.get("port"));
+app.listen(app.get("port"), 'locahost', () =>{
+  console.info("Application listening on port http://127.0.0.1:"+ app.get("port"));
 });
 app.get('/',function(req,res){
     res.sendFile(path.join(__dirname+(ready ? '/index.html' : '/auth.html')));
