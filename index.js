@@ -13,7 +13,7 @@ const client = new Client({
         ]
     }
 });
-// var ip = require("ip");
+var ip = require("ip");
 var local_app = express();
 var public_app = express();
 
@@ -67,7 +67,7 @@ local_app.listen(local_app.get("port"), '127.0.0.1', () =>{
 public_app.use(express.json())
 public_app.set("port", 3000);
 public_app.listen(local_app.get("port"), () =>{
-  console.info("Application listening on port http://127.0.0.1:"+ local_app.get("port"));
+  console.info("Application listening on port http://" + ip.address() +':'+ app.get("port"));
 });
 public_app.get('/',function(req,res){
     res.sendFile(path.join(__dirname+(ready ? '/index.html' : '/auth.html')));
