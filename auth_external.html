@@ -47,8 +47,10 @@
                 .then(data => {
                     if (data == 'WA_IS_READY')
                         location.reload();
-                    else
+                    else {
+                        document.getElementById("qrcode").innerHTML = '';
                         new QRCode(document.getElementById("qrcode"), data);
+                    }
                 });
         }, 1000);
     </script>
