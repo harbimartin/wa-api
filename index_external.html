@@ -57,7 +57,7 @@
             const data = {
                 pnumber: document.getElementById('pnumber').value
             };
-            fetch(window.location.origin + '/api/v1/checkWhatsapp', {
+            fetch(location.host + '/api/v1/checkWhatsapp', {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 mode: 'cors', // no-cors, *cors, same-origin
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
