@@ -26,18 +26,18 @@ client.on('qr', (qr) => {
     });
 });
 
-var mysql = require('mysql');
+// var mysql = require('mysql');
 
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: ""
-});
+// var con = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: ""
+// });
 
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("MySQL Connected!");
-});
+// con.connect(function(err) {
+//   if (err) throw err;
+//   console.log("MySQL Connected!");
+// });
 
 client.on('ready', (data) => {
     console.log('Client is ready!');
