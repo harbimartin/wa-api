@@ -2,7 +2,17 @@ const qrcode = require('qrcode-terminal');
 const express = require('express');
 const path = require('path');
 const { Client } = require('whatsapp-web.js');
-const client = new Client();
+const client = new Client({
+    qrTimeoutMs: 0,
+    puppeteer: {
+        headless: true,
+        args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--unhandled-rejections=strict"
+        ]
+    }
+});
 var ip = require("ip");
 var app = express();
 
