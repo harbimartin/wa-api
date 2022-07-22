@@ -59,7 +59,7 @@ client.on('message', message => {
 
 app.set("port", 3000);
 app.use(express.json())
-app.listen(app.get("port"), 'locahost', () =>{
+app.listen(app.get("port"), '127.9.0.1', () =>{
   console.info("Application listening on port http://127.0.0.1:"+ app.get("port"));
 });
 app.get('/',function(req,res){
