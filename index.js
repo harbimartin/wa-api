@@ -150,6 +150,7 @@ local_app.post('/sendMessage',function(req,res){
     let err_msg = null;
     try {
         const pnumber = body.pnumber ? body.pnumber : '6281234560515';
+        const message = body.message;
         if (!pnumber && pnumber.length < 5 || pnumber[0] != '6' || !isNumeric(pnumber))
             res.end(throwError(err_msg = `Isi nomor telepon yang valid! Terisi (+${pnumber})`));
         if (message.length < 5)
