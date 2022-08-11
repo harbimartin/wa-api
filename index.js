@@ -7,6 +7,7 @@ const client = new Client({
     puppeteer: {
         headless: true,
         args: [
+            "--disable-extensions",
             "--no-sandbox",
             "--disable-setuid-sandbox",
             "--unhandled-rejections=strict",
