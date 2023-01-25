@@ -12,7 +12,8 @@ const client = new Client({
             "--disable-setuid-sandbox",
             "--unhandled-rejections=strict",
             "--use-gl=egl"
-        ]
+        ],
+        executablePath: '/usr/bin/chromium-browser'
     }
 });
 var ip = require("ip");
