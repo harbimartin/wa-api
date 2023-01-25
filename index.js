@@ -77,6 +77,9 @@ public_app.get('/',function(req,res){
 public_app.get('/qrcode.js',function(req,res){
     res.sendFile(path.join(__dirname+'/node_modules/@keeex/qrcodejs-kx/qrcode.min.js'));
 });
+public_app.get('/helper_index.min.js',function(req,res){
+    res.sendFile(path.join(__dirname+'/helper_index.min.js'));
+});
 public_app.get('/getStatus', function (req, res) {
     if (ready) {
         res.send('WA_IS_READY');
@@ -162,23 +165,23 @@ local_app.post('/sendMessage',function(req,res){
         if (message.length < 5)
             res.end(throwError(err_msg = `Pesan tidak boleh kosong!`));
         res.statusCode = 400;
-        if (err_msg == null) {33
-            const productsList = new List(
-            "Here's our list of products at 50% off",
-            "View all products",
-            [
-                {
-                title: "Products list",
-                rows: [
-                    { id: "apple", title: "Apple" },
-                    { id: "mango", title: "Mango" },
-                    { id: "banana", title: "Banana" },
-                ],
-                },
-            ],
-            "Please select a product"
-            );
-            client.sendMessage(`${pnumber}@c.us`, productsList);
+        if (err_msg == null) {
+            // const productsList = new List(
+            // "Here's our list of products at 50% off",
+            // "View all products",
+            // [
+            //     {
+            //     title: "Products list",
+            //     rows: [
+            //         { id: "apple", title: "Apple" },
+            //         { id: "mango", title: "Mango" },
+            //         { id: "banana", title: "Banana" },
+            //     ],
+            //     },
+            // ],
+            // "Please select a product"
+            // );
+            // client.sendMessage(`${pnumber}@c.us`, productsList);
             client.sendMessage(`${pnumber}@c.us`, message).then(
                 (value) => {
                     res.statusCode = 200;
