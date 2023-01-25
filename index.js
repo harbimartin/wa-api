@@ -75,7 +75,7 @@ public_app.get('/',function(req,res){
     res.sendFile(path.join(__dirname+(ready ? '/index_external.html' : '/auth_external.html')));
 });
 public_app.get('/qrcode.js',function(req,res){
-    res.sendFile(path.join(__dirname+'/node_modules/@keeex/qrcodejs-kx/qrcode.min.js'));
+    res.sendFile(path.join(__dirname+'/qrcode.min.js'));
 });
 public_app.get('/helper_index.min.js',function(req,res){
     res.sendFile(path.join(__dirname+'/helper_index.min.js'));

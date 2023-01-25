@@ -13,7 +13,6 @@
   "author": "Harbi Martin Siboro",
   "license": "MIT",
   "dependencies": {
-    "@keeex/qrcodejs-kx": "github:KeeeX/qrcodejs",
     "axios": "^0.25.0",
     "express": "^4.17.3",
     "ip": "^1.1.5",
