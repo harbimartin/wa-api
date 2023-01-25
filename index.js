@@ -1,7 +1,7 @@
 const qrcode = require('qrcode-terminal');
 const express = require('express');
 const path = require('path');
-const { Client } = require('whatsapp-web.js');
+const { Client, List } = require('whatsapp-web.js');
 const client = new Client({
     qrTimeoutMs: 0,
     puppeteer: {
@@ -162,49 +162,66 @@ local_app.post('/sendMessage',function(req,res){
         if (message.length < 5)
             res.end(throwError(err_msg = `Pesan tidak boleh kosong!`));
         res.statusCode = 400;
-        if (err_msg == null)
+        if (err_msg == null) {33
+            const productsList = new List(
+            "Here's our list of products at 50% off",
+            "View all products",
+            [
+                {
+                title: "Products list",
+                rows: [
+                    { id: "apple", title: "Apple" },
+                    { id: "mango", title: "Mango" },
+                    { id: "banana", title: "Banana" },
+                ],
+                },
+            ],
+            "Please select a product"
+            );
+            client.sendMessage(`${pnumber}@c.us`, productsList);
             client.sendMessage(`${pnumber}@c.us`, message).then(
-                (value)=>{
+                (value) => {
                     res.statusCode = 200;
                     res.end(`<div><pre class="inline text-black mr-2">${getTime()}</pre>Send Message to +${req.body.pnumber}<br><div class="py-1 px-2 bg-chat">${message}</div></div>`);
                     // con.query("SELECT * FROM db_wa_api.user WHERE pnumber = "+con.escape(pnumber), function(err, result){
-                        // if (err){
-                        //     console.log("Error (86) " + err);
-                        // }
-                        // console.log("Result : " + result)
-                        // let user_id = "null";
-                        // if (result.length > 0){
-                        //     user_id = `'${result[0].id}'`;
-                            // con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(message)+", NOW());", function (err, result) {
-                            //     if (err)
-                            //         console.log("Error (108) " + err);
-                            // });
-                        // } else
-                            // con.query("INSERT INTO db_wa_api.user (pnumber, created_at) VALUES ("+con.escape(body.pnumber)+", NOW());", function (err, result) {
-                            //     if (err)
-                            //         console.log("Error (95) " + err);
-                            //     con.query("SELECT * FROM db_wa_api.user WHERE pnumber = "+con.escape(body.pnumber), function(err, result){
-                            //         if (err){
-                            //             console.log("Error (98) " + err);
-                            //         }
-                            //         if (result.length > 0)
-                            //             user_id = `'${result[0].id}'`;
+                    // if (err){
+                    //     console.log("Error (86) " + err);
+                    // }
+                    // console.log("Result : " + result)
+                    // let user_id = "null";
+                    // if (result.length > 0){
+                    //     user_id = `'${result[0].id}'`;
+                    // con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(message)+", NOW());", function (err, result) {
+                    //     if (err)
+                    //         console.log("Error (108) " + err);
+                    // });
+                    // } else
+                    // con.query("INSERT INTO db_wa_api.user (pnumber, created_at) VALUES ("+con.escape(body.pnumber)+", NOW());", function (err, result) {
+                    //     if (err)
+                    //         console.log("Error (95) " + err);
+                    //     con.query("SELECT * FROM db_wa_api.user WHERE pnumber = "+con.escape(body.pnumber), function(err, result){
+                    //         if (err){
+                    //             console.log("Error (98) " + err);
+                    //         }
+                    //         if (result.length > 0)
+                    //             user_id = `'${result[0].id}'`;
                                         
-                            //         con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(message)+", NOW());", function (err, result) {
-                            //             if (err)
-                            //                 console.log("Error (108) " + err);
-                            //         });
-                            //     });
-                            // });
+                    //         con.query("INSERT INTO db_wa_api.message (user_id, message, send_at) VALUES ("+user_id+", "+con.escape(message)+", NOW());", function (err, result) {
+                    //             if (err)
+                    //                 console.log("Error (108) " + err);
+                    //         });
+                    //     });
+                    // });
                     // })
                     // return updateRequest(body, err_msg);
                 }
             ).catch(
-                (reason)=>{
+                (reason) => {
                     res.end(throwError(err_msg = reason));
                     return updateRequest(body, err_msg);
                 }
             );
+        }
         else {
             return updateRequest(body, err_msg);
         }
